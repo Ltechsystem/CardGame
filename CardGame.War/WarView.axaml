@@ -1,0 +1,98 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:CardGame.War"
+             x:Class="CardGame.War.WarView"
+             x:DataType="vm:WarViewModel">
+
+    <Panel Background="#1A472A">
+        <Grid RowDefinitions="Auto,*,Auto" Margin="24,16">
+
+            <!-- Header -->
+            <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="0,0,0,12">
+                <Button Grid.Column="0" Content="← MENU" Command="{Binding BackToMenuCommand}" Padding="12,8"/>
+                <TextBlock Grid.Column="1" Text="WAR" FontSize="22" FontWeight="Bold"
+                           Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+
+            <!-- Game area -->
+            <Grid Grid.Row="1" RowDefinitions="*,Auto,*">
+
+                <!-- AI card -->
+                <StackPanel Grid.Row="0" VerticalAlignment="Center" Spacing="8">
+                    <TextBlock Foreground="#9E9E9E" FontSize="11" FontWeight="SemiBold"
+                               Text="{Binding AiWins, StringFormat='AI WINS: {0}'}"/>
+                    <Panel Width="56" Height="84">
+                        <!-- Face-down placeholder -->
+                        <Border Background="#2D5016" CornerRadius="6"
+                                BoxShadow="0 2 8 0 #60000000"
+                                IsVisible="{Binding !HasPlayedRound}">
+                            <TextBlock Text="?" FontSize="28" FontWeight="Bold" Foreground="#4A7C2F"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <!-- Revealed card -->
+                        <Border Background="White" CornerRadius="6" Padding="8,6"
+                                BoxShadow="0 2 8 0 #60000000"
+                                IsVisible="{Binding HasPlayedRound}">
+                            <StackPanel>
+                                <TextBlock Text="{Binding AiCardRank}" FontSize="20" FontWeight="Bold" Foreground="#1A1A1A"/>
+                                <TextBlock Text="{Binding AiCardSuite}" FontSize="18" Foreground="#CC2200" IsVisible="{Binding AiCardIsRed}"/>
+                                <TextBlock Text="{Binding AiCardSuite}" FontSize="18" Foreground="#1A1A1A" IsVisible="{Binding !AiCardIsRed}"/>
+                            </StackPanel>
+                        </Border>
+                    </Panel>
+                </StackPanel>
+
+                <!-- Status -->
+                <StackPanel Grid.Row="1" HorizontalAlignment="Center" Spacing="6">
+                    <Border Background="#00000050" CornerRadius="8" Padding="24,10">
+                        <TextBlock Text="{Binding RoundResult}" Foreground="White"
+                                   FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="{Binding CardsLeft, StringFormat='Cards left: {0}'}"
+                               Foreground="#9E9E9E" FontSize="13" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding ResultMessage}" Foreground="#E0C87A"
+                               FontSize="15" FontWeight="SemiBold" HorizontalAlignment="Center"
+                               IsVisible="{Binding IsResultPhase}"/>
+                </StackPanel>
+
+                <!-- Player card -->
+                <StackPanel Grid.Row="2" VerticalAlignment="Center" Spacing="8">
+                    <TextBlock Foreground="#9E9E9E" FontSize="11" FontWeight="SemiBold"
+                               Text="{Binding PlayerWins, StringFormat='YOUR WINS: {0}'}"/>
+                    <Panel Width="56" Height="84">
+                        <!-- Face-down placeholder -->
+                        <Border Background="#2D5016" CornerRadius="6"
+                                BoxShadow="0 2 8 0 #60000000"
+                                IsVisible="{Binding !HasPlayedRound}">
+                            <TextBlock Text="?" FontSize="28" FontWeight="Bold" Foreground="#4A7C2F"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <!-- Revealed card -->
+                        <Border Background="White" CornerRadius="6" Padding="8,6"
+                                BoxShadow="0 2 8 0 #60000000"
+                                IsVisible="{Binding HasPlayedRound}">
+                            <StackPanel>
+                                <TextBlock Text="{Binding PlayerCardRank}" FontSize="20" FontWeight="Bold" Foreground="#1A1A1A"/>
+                                <TextBlock Text="{Binding PlayerCardSuite}" FontSize="18" Foreground="#CC2200" IsVisible="{Binding PlayerCardIsRed}"/>
+                                <TextBlock Text="{Binding PlayerCardSuite}" FontSize="18" Foreground="#1A1A1A" IsVisible="{Binding !PlayerCardIsRed}"/>
+                            </StackPanel>
+                        </Border>
+                    </Panel>
+                </StackPanel>
+
+            </Grid>
+
+            <!-- Bottom controls -->
+            <StackPanel Grid.Row="2" HorizontalAlignment="Center" Spacing="12" Margin="0,12,0,0">
+                <Button Content="DRAW CARD" Command="{Binding DrawCommand}"
+                        IsVisible="{Binding IsPlayingPhase}"
+                        Background="#E0C87A" Foreground="#1E1E1E"
+                        FontWeight="Bold" FontSize="16" Padding="32,12" CornerRadius="8"/>
+                <Button Content="BACK TO MENU" Command="{Binding BackToMenuCommand}"
+                        FontSize="15" Padding="24,10" CornerRadius="8"/>
+            </StackPanel>
+
+        </Grid>
+    </Panel>
+
+</UserControl>

@@ -1,0 +1,148 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:CardGame.Blackjack"
+             xmlns:models="using:CardGame.Models"
+             x:Class="CardGame.Blackjack.BlackjackView"
+             x:DataType="vm:BlackjackViewModel">
+
+    <Panel Background="#1A472A">
+        <Grid RowDefinitions="Auto,*,Auto" Margin="24,16">
+
+            <!-- Header -->
+            <Grid Row="0" ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,12">
+                <Button Grid.Column="0" Content="← MENU" Command="{Binding BackToMenuCommand}" Padding="12,8"/>
+                <TextBlock Grid.Column="1" Text="BLACKJACK" FontSize="22" FontWeight="Bold"
+                           Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Border Grid.Column="2" Background="#00000050" CornerRadius="8" Padding="12,8">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <TextBlock Text="CHIPS" Foreground="#9E9E9E" FontSize="11" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding ChipBalance}" Foreground="#E0C87A" FontSize="18" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Game area -->
+            <Grid Row="1" RowDefinitions="*,Auto,*">
+
+                <!-- Dealer hand -->
+                <StackPanel Grid.Row="0" VerticalAlignment="Center" Spacing="8">
+                    <TextBlock Foreground="#9E9E9E" FontSize="11" FontWeight="SemiBold"
+                               Text="{Binding DealerVisibleValue, StringFormat='DEALER  [{0}+?]'}"/>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <ItemsControl ItemsSource="{Binding DealerVisibleHand}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" Spacing="8"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="models:Card">
+                                    <Border Width="56" Height="84" Background="White" CornerRadius="6"
+                                            Padding="8,6" BoxShadow="0 2 8 0 #60000000">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding RankSymbol}" FontSize="20" FontWeight="Bold" Foreground="#1A1A1A"/>
+                                            <TextBlock Text="{Binding SuiteSymbol}" FontSize="18" Foreground="#CC2200" IsVisible="{Binding IsRed}"/>
+                                            <TextBlock Text="{Binding SuiteSymbol}" FontSize="18" Foreground="#1A1A1A" IsVisible="{Binding !IsRed}"/>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <Border IsVisible="{Binding HasHiddenDealerCard}"
+                                Width="56" Height="84" Background="#2D5016" CornerRadius="6"
+                                BoxShadow="0 2 8 0 #60000000">
+                            <TextBlock Text="?" FontSize="28" FontWeight="Bold" Foreground="#4A7C2F"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Status + result chip delta -->
+                <StackPanel Grid.Row="1" HorizontalAlignment="Center" Spacing="4">
+                    <Border Background="#00000050" CornerRadius="8" Padding="24,10">
+                        <TextBlock Text="{Binding StatusMessage}" Foreground="White"
+                                   FontSize="20" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="{Binding ResultMessage}" Foreground="#E0C87A"
+                               FontSize="15" FontWeight="SemiBold" HorizontalAlignment="Center"
+                               IsVisible="{Binding IsResultPhase}"/>
+                </StackPanel>
+
+                <!-- Player hand -->
+                <StackPanel Grid.Row="2" VerticalAlignment="Center" Spacing="8">
+                    <TextBlock Foreground="#9E9E9E" FontSize="11" FontWeight="SemiBold"
+                               Text="{Binding PlayerHandValue, StringFormat='YOU  [{0}]'}"/>
+                    <ItemsControl ItemsSource="{Binding PlayerHand}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="8"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="models:Card">
+                                <Border Width="56" Height="84" Background="White" CornerRadius="6"
+                                        Padding="8,6" BoxShadow="0 2 8 0 #60000000">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding RankSymbol}" FontSize="20" FontWeight="Bold" Foreground="#1A1A1A"/>
+                                        <TextBlock Text="{Binding SuiteSymbol}" FontSize="18" Foreground="#CC2200" IsVisible="{Binding IsRed}"/>
+                                        <TextBlock Text="{Binding SuiteSymbol}" FontSize="18" Foreground="#1A1A1A" IsVisible="{Binding !IsRed}"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Grid>
+
+            <!-- Bottom controls -->
+            <StackPanel Grid.Row="2" Spacing="12" Margin="0,12,0,0">
+
+                <!-- Betting phase -->
+                <StackPanel IsVisible="{Binding IsBettingPhase}" Spacing="10">
+                    <TextBlock Text="PLACE YOUR BET" Foreground="#9E9E9E" FontSize="11"
+                               FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                        <Button Content="25"     Command="{Binding Bet25Command}"    Padding="14,8"/>
+                        <Button Content="50"     Command="{Binding Bet50Command}"    Padding="14,8"/>
+                        <Button Content="100"    Command="{Binding Bet100Command}"   Padding="14,8"/>
+                        <Button Content="ALL IN" Command="{Binding BetAllInCommand}" Padding="14,8"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                        <TextBox Text="{Binding BetInput}" Width="120" FontSize="16"
+                                 HorizontalContentAlignment="Center" Watermark="Bet amount"/>
+                        <Button Content="DEAL" Command="{Binding DealCommand}"
+                                Background="#E0C87A" Foreground="#1E1E1E"
+                                FontWeight="Bold" FontSize="15" Padding="24,8" CornerRadius="8"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Playing phase -->
+                <StackPanel IsVisible="{Binding IsPlayingPhase}" Orientation="Horizontal"
+                            Spacing="12" HorizontalAlignment="Center">
+                    <Button Content="HIT"   Command="{Binding HitCommand}"
+                            Background="#E0C87A" Foreground="#1E1E1E"
+                            FontWeight="Bold" FontSize="16" Padding="32,12" CornerRadius="8"/>
+                    <Button Content="STAND" Command="{Binding StandCommand}"
+                            FontSize="16" Padding="32,12" CornerRadius="8"/>
+                </StackPanel>
+
+                <!-- Result phase -->
+                <StackPanel IsVisible="{Binding IsResultPhase}" Orientation="Horizontal"
+                            Spacing="12" HorizontalAlignment="Center">
+                    <Button Content="NEXT HAND" Command="{Binding NextHandCommand}"
+                            Background="#E0C87A" Foreground="#1E1E1E"
+                            FontWeight="Bold" FontSize="15" Padding="24,10" CornerRadius="8"
+                            IsVisible="{Binding !IsBankrupt}"/>
+                    <Button Content="BACK TO MENU" Command="{Binding BackToMenuCommand}"
+                            FontSize="15" Padding="24,10" CornerRadius="8"/>
+                </StackPanel>
+
+                <TextBlock IsVisible="{Binding IsBankrupt}"
+                           Text="Out of chips! Return to menu to start a new session."
+                           Foreground="#EF5350" FontSize="13" HorizontalAlignment="Center"/>
+            </StackPanel>
+
+        </Grid>
+    </Panel>
+
+</UserControl>
